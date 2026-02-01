@@ -4,28 +4,39 @@ Application configuration for different environments.
 import os
 from pathlib import Path
 
+db_url = os.getenv("DATABASE_URL")
+if db_url and db_url.startswith("postgres://"):
+    db_url = db_url.replace("postgres://", "postgresql://", 1)
+
+SQLALCHEMY_DATABASE_URI = db_url
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+# class Config:
+#     """Base configuration."""
+#     SECRET_KEY = os.environ.get("SECRET_KEY") or "dev-secret-key-change-in-production"
+#     SQLALCHEMY_TRACK_MODIFICATIONS = False
+#     WTF_CSRF_ENABLED = True
+#     ITEMS_PER_PAGE = 20
+#     # Store info for receipts
+#     STORE_NAME = os.environ.get("STORE_NAME", "Grocery Store")
+#     STORE_ADDRESS = os.environ.get("STORE_ADDRESS", "123 Main St")
+#     STORE_PHONE = os.environ.get("STORE_PHONE", "+1 234 567 8900")
+#     TAX_RATE = float(os.environ.get("TAX_RATE", "0.08"))
+
+#     # PostgreSQL connection settings
+#     DB_HOST = os.environ.get("DB_HOST", "localhost")
+#     DB_PORT = os.environ.get("DB_PORT", "5432")
+#     DB_NAME = os.environ.get("DB_NAME", "grocery_store")
+#     DB_USER = os.environ.get("DB_USER", "postgres")
+#     DB_PASSWORD = os.environ.get("DB_PASSWORD", "postgres")
+ 
 class Config:
-    """Base configuration."""
-    SECRET_KEY = os.environ.get("SECRET_KEY") or "dev-secret-key-change-in-production"
+    SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    WTF_CSRF_ENABLED = True
-    ITEMS_PER_PAGE = 20
-    # Store info for receipts
-    STORE_NAME = os.environ.get("STORE_NAME", "Grocery Store")
-    STORE_ADDRESS = os.environ.get("STORE_ADDRESS", "123 Main St")
-    STORE_PHONE = os.environ.get("STORE_PHONE", "+1 234 567 8900")
-    TAX_RATE = float(os.environ.get("TAX_RATE", "0.08"))
 
-    # PostgreSQL connection settings
-    DB_HOST = os.environ.get("DB_HOST", "localhost")
-    DB_PORT = os.environ.get("DB_PORT", "5432")
-    DB_NAME = os.environ.get("DB_NAME", "grocery_store")
-    DB_USER = os.environ.get("DB_USER", "postgres")
-    DB_PASSWORD = os.environ.get("DB_PASSWORD", "postgres")
-
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
 
 class DevelopmentConfig(Config):
     """Development configuration."""

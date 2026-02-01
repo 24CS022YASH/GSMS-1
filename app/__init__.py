@@ -33,6 +33,9 @@ def create_app(config_name=None):
     login_manager.login_view = "auth.login"
     login_manager.login_message = "Please log in to access this page."
     login_manager.login_message_category = "info"
+     
+    with app.app_context():
+    db.create_all()
 
     from app.models.user import User
     import app.models  # noqa: F401 - register all models with SQLAlchemy
