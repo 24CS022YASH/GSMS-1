@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}User form{% endblock %}
+{% block content %}
+<div class="page-header mb-3">
+  <h1 class="h4 mb-0"><i class="bi bi-person-gear me-2"></i>{{ 'Edit' if user else 'Add' }} User</h1>
+</div>
+<form method="post" class="card p-4" style="max-width: 500px;">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="mb-3"><label for="username" class="form-label fw-medium">Username *</label><input type="text" class="form-control rounded-3" id="username" name="username" required value="{% if user %}{{ user.username }}{% endif %}" {% if user %}readonly{% endif %}></div>
+  <div class="mb-3"><label for="password" class="form-label fw-medium">Password</label><input type="password" class="form-control rounded-3" id="password" name="password" placeholder="{% if user %}Leave blank to keep{% else %}Required for new user{% endif %}"></div>
+  <div class="mb-3"><label for="role" class="form-label fw-medium">Role</label><select class="form-select rounded-3" id="role" name="role">{% for r in ['cashier','manager','admin'] %}<option value="{{ r }}" {% if user and user.role == r %}selected{% endif %}>{{ r }}</option>{% endfor %}</select></div>
+  <div class="mb-3"><label for="full_name" class="form-label fw-medium">Full name</label><input type="text" class="form-control rounded-3" id="full_name" name="full_name" value="{% if user %}{{ user.full_name or '' }}{% endif %}"></div>
+  <div class="mb-3"><label for="email" class="form-label fw-medium">Email</label><input type="email" class="form-control rounded-3" id="email" name="email" value="{% if user %}{{ user.email or '' }}{% endif %}"></div>
+  {% if user %}<div class="mb-3"><div class="form-check"><input type="checkbox" class="form-check-input" name="active" value="1" id="active" {% if user.active %}checked{% endif %}><label class="form-check-label" for="active">Active</label></div></div>{% endif %}
+  <div class="d-flex gap-2 mt-2">
+    <button type="submit" class="btn btn-primary rounded-3"><i class="bi bi-check-lg me-1"></i>Save</button>
+    <a href="{{ url_for('users.user_list') }}" class="btn btn-outline-secondary rounded-3">Cancel</a>
+  </div>
+</form>
+{% endblock %}

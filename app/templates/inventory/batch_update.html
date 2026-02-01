@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Batch Update{% endblock %}
+{% block content %}
+<div class="page-header mb-3">
+  <h1 class="h4 mb-0"><i class="bi bi-arrow-repeat me-2"></i>Batch Update Products</h1>
+</div>
+{% include "includes/inventory_nav.html" %}
+<p class="text-muted small mb-3">Paste a JSON array of objects with <code>id</code> and fields to update (e.g. <code>quantity</code>, <code>price</code>, <code>min_stock</code>).</p>
+<div class="card p-4">
+  <textarea id="batchJson" class="form-control font-monospace" rows="10" placeholder='[{"id": 1, "quantity": 50}, {"id": 2, "price": 3.99}]'></textarea>
+  <div class="mt-3 d-flex align-items-center gap-2 flex-wrap">
+    <button type="button" class="btn btn-primary" id="btnBatch"><i class="bi bi-check-lg me-1"></i>Update</button>
+    <span id="result" class="text-muted small"></span>
+  </div>
+</div>
+<script>
+document.getElementById('btnBatch').onclick = function() {
+  var el = document.getElementById('batchJson');
+  var result = document.getElementById('result');
+  try {
+    var data = JSON.parse(el.value);
+    if (!Array.isArray(data)) { result.textContent = 'Must be a JSON array'; return; }
+  } catch (e) { result.textContent = 'Invalid JSON'; return; }
+  fetch('{{ url_for("inventory.batch_update") }}', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token() }}' },
+    body: JSON.stringify(data)
+  }).then(r => r.json()).then(function(res) {
+    result.textContent = 'Updated: ' + (res.updated || 0) + (res.errors && res.errors.length ? '; errors: ' + res.errors.join(', ') : '');
+  }).catch(function() { result.textContent = 'Request failed'; });
+};
+</script>
+{% endblock %}

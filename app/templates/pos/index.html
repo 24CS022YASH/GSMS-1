@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}POS{% endblock %}
+{% block content %}
+<div class="page-header mb-3">
+  <h1 class="h4 mb-0"><i class="bi bi-cart-check me-2"></i>Point of Sale</h1>
+</div>
+<form method="get" action="{{ url_for('pos.lookup') }}" class="card p-3 mb-3">
+  <div class="row g-2 align-items-end">
+    <div class="col-auto flex-grow-1" style="min-width: 200px;">
+      <label class="form-label small mb-0">Barcode, SKU, or product name</label>
+      <input type="text" name="q" class="form-control" placeholder="Scan or type to add..." autofocus>
+    </div>
+    <div class="col-auto"><label class="form-label small mb-0">Qty</label><input type="number" name="add_qty" class="form-control" style="width: 70px;" value="1" min="1" title="Quantity"></div>
+    <div class="col-auto"><button type="submit" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Add to cart</button></div>
+  </div>
+  <p class="small text-muted mb-0 mt-2">Or <a href="{{ url_for('inventory.product_list') }}">browse inventory</a> to add by product.</p>
+</form>
+<div class="card mb-3 overflow-hidden">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <span>Cart</span>
+    {% if cart %}<form method="post" action="{{ url_for('pos.cart_clear') }}" class="d-inline"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button type="submit" class="btn btn-sm btn-outline-danger">Clear cart</button></form>{% endif %}
+  </div>
+  <div class="card-body p-0">
+    {% if cart %}
+    <div class="table-responsive">
+      <table class="table table-sm align-middle mb-0">
+        <thead class="table-light"><tr><th>Item</th><th>Price</th><th>Qty</th><th>Subtotal</th><th class="text-end">Actions</th></tr></thead>
+        <tbody>
+        {% for item in cart %}
+        <tr>
+          <td><strong>{{ item.name }}</strong></td>
+          <td>{{ item.price }}</td>
+          <td>
+            <form method="post" action="{{ url_for('pos.cart_update', product_id=item.product_id) }}" class="d-inline-flex align-items-center gap-1">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <input type="number" name="quantity" class="form-control form-control-sm" style="width: 65px;" value="{{ item.quantity }}" min="1">
+              <button type="submit" class="btn btn-sm btn-outline-secondary">Update</button>
+            </form>
+          </td>
+          <td>{{ item.subtotal }}</td>
+          <td class="text-end">
+            <form method="post" action="{{ url_for('pos.cart_remove', product_id=item.product_id) }}" class="d-inline">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p class="text-muted text-center py-4 mb-0">Cart is empty. Add items above.</p>
+    {% endif %}
+  </div>
+</div>
+<div class="card">
+  <div class="card-header">Totals</div>
+  <div class="card-body">
+    {% if totals %}
+    <p class="mb-2">Subtotal: <strong>{{ totals.subtotal }}</strong> · Tax: <strong>{{ totals.tax_amount }}</strong> · Total: <strong>{{ totals.total }}</strong></p>
+    <a href="{{ url_for('pos.checkout') }}" class="btn btn-success"><i class="bi bi-credit-card me-1"></i>Checkout</a>
+    {% else %}
+    <p class="text-muted mb-0">No items in cart.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

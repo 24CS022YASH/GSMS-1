@@ -1,0 +1,9 @@
+{% if current_user.is_manager_or_above() %}
+<nav class="nav nav-pills nav-fill gap-1 mb-3 flex-wrap" style="background: #fff; padding: .5rem; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,.06);">
+  <a class="nav-link {{ 'active' if request.endpoint in ['inventory.product_list', 'inventory.product_add', 'inventory.product_edit'] else '' }}" href="{{ url_for('inventory.product_list') }}"><i class="bi bi-box-seam me-1"></i>Products</a>
+  <a class="nav-link {{ 'active' if request.endpoint in ['inventory.category_list', 'inventory.category_add', 'inventory.category_edit'] else '' }}" href="{{ url_for('inventory.category_list') }}"><i class="bi bi-tags me-1"></i>Categories</a>
+  <a class="nav-link {{ 'active' if request.endpoint in ['inventory.supplier_list', 'inventory.supplier_add', 'inventory.supplier_edit'] else '' }}" href="{{ url_for('inventory.supplier_list') }}"><i class="bi bi-truck me-1"></i>Suppliers</a>
+  <a class="nav-link {{ 'active' if request.endpoint == 'inventory.alerts' else '' }}" href="{{ url_for('inventory.alerts') }}"><i class="bi bi-exclamation-triangle me-1"></i>Alerts</a>
+  <a class="nav-link {{ 'active' if request.endpoint == 'inventory.batch_update' else '' }}" href="{{ url_for('inventory.batch_update') }}"><i class="bi bi-arrow-repeat me-1"></i>Batch</a>
+</nav>
+{% endif %}

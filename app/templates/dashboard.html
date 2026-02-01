@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+  <h1 class="h4 mb-0"><i class="bi bi-grid-1x2 me-2"></i>Dashboard</h1>
+  <a href="{{ url_for('pos.index') }}" class="btn btn-primary"><i class="bi bi-cart-plus me-1"></i> New Sale</a>
+</div>
+<p class="text-muted small mb-3">Welcome, <strong>{{ current_user.full_name or current_user.username }}</strong>. Use the menu to go to any section.</p>
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <h6 class="text-muted text-uppercase small fw-semibold mb-3">Quick Actions</h6>
+        <div class="d-flex flex-wrap gap-2">
+          <a href="{{ url_for('pos.index') }}" class="btn btn-outline-primary btn-sm"><i class="bi bi-cart-check me-1"></i>POS</a>
+          <a href="{{ url_for('inventory.product_list') }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-box-seam me-1"></i>Products</a>
+          {% if current_user.is_manager_or_above() %}
+          <a href="{{ url_for('inventory.alerts') }}" class="btn btn-outline-warning btn-sm"><i class="bi bi-exclamation-triangle me-1"></i>Alerts</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <h6 class="text-muted text-uppercase small fw-semibold mb-3">Inventory</h6>
+        <a href="{{ url_for('inventory.product_list') }}" class="d-block mb-1 text-decoration-none"><i class="bi bi-box-seam me-2"></i>View products</a>
+        {% if current_user.is_manager_or_above() %}
+        <a href="{{ url_for('inventory.alerts') }}" class="d-block mb-1 text-decoration-none"><i class="bi bi-exclamation-triangle me-2"></i>Low stock & expiry</a>
+        <a href="{{ url_for('inventory.category_list') }}" class="d-block text-decoration-none"><i class="bi bi-tags me-2"></i>Categories</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% if current_user.is_manager_or_above() %}
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <h6 class="text-muted text-uppercase small fw-semibold mb-3">Reports</h6>
+        <a href="{{ url_for('analytics.dashboard') }}" class="d-block mb-1 text-decoration-none"><i class="bi bi-graph-up me-2"></i>Sales & analytics</a>
+        <a href="{{ url_for('analytics.sales_report_page') }}" class="d-block mb-1 text-decoration-none"><i class="bi bi-receipt me-2"></i>Sales report</a>
+        <a href="{{ url_for('analytics.export_csv') }}" class="d-block text-decoration-none"><i class="bi bi-file-earmark-text me-2"></i>Export CSV</a>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

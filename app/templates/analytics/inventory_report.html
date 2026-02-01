@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Inventory report{% endblock %}
+{% block content %}
+<div class="page-header mb-3">
+  <h1 class="h4 mb-0"><i class="bi bi-clipboard-data me-2"></i>Inventory report</h1>
+</div>
+{% include "includes/analytics_nav.html" %}
+<div class="card p-3 mb-3 small">Revenue (period): <strong>{{ turnover.total_revenue }}</strong> · Inventory value approx: <strong>{{ turnover.inventory_value_approx }}</strong></div>
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="card"><div class="card-header">Slow moving (last 90 days)</div><div class="card-body p-0"><ul class="list-group list-group-flush">{% for p in slow_moving %}<li class="list-group-item d-flex justify-content-between"><span>{{ p.name }}</span><span class="badge bg-secondary rounded-pill">qty {{ p.quantity }}</span></li>{% else %}<li class="list-group-item text-muted">None</li>{% endfor %}</ul></div></div>
+  </div>
+  <div class="col-md-6">
+    <div class="card"><div class="card-header">Best selling (period)</div><div class="card-body p-0"><ul class="list-group list-group-flush">{% for b in best_selling %}<li class="list-group-item d-flex justify-content-between align-items-center"><span>{{ b.name }}</span><span class="badge bg-primary rounded-pill">{{ b.quantity_sold }} sold</span></li>{% else %}<li class="list-group-item text-muted">None</li>{% endfor %}</ul></div></div>
+  </div>
+</div>
+{% endblock %}
